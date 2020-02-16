@@ -16,24 +16,18 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-//    private lateinit var api: NasaApiService
-//    private lateinit var compositeDisposable: CompositeDisposable
 
-    private  var pod : PictureOfTheDay? = null
+
+
     private lateinit var viewModel: MainActivityViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        compositeDisposable= CompositeDisposable()
-//        //init api
-//        val retrofit  =RetrofitClient.instance
-//        api = retrofit.create(NasaApiService::class.java)
-//        fetchData()
-
         viewModel = ViewModelProvider.AndroidViewModelFactory(application)
             .create(MainActivityViewModel::class.java)
-            //   viewModel?.fetchData()
+
         viewModel.getApod()?.observe(this, Observer {
             if (it != null) {
                 displayData(it)
@@ -46,16 +40,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-//    private fun fetchData() {
-//        compositeDisposable.add(api.getPictureOfTheDay()
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({success -> displayData(success)}, {error -> Toast.makeText(this,"error",Toast.LENGTH_SHORT).show()
-//            error.printStackTrace()})
-//
-//        )
-//
-//    }
 
     private fun displayData(list: PictureOfTheDay) {
         date.text = list.date

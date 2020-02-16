@@ -1,17 +1,14 @@
 package com.dms.nasaapi.room
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.dms.nasaapi.model.PictureOfTheDay
 
 @Dao
 interface ApodDAO {
 
-    @Insert
-    fun add(apod: PictureOfTheDay):Long
+    @Insert(onConflict = OnConflictStrategy.REPLACE)//заменить сущствующую запись, или если нет, добавить
+    fun add(apod: PictureOfTheDay)
 
     //редактирование/обновление
     @Update
