@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">NASAapi</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_home">APOD</string>
+    <string name="gallry">fragment_gallery</string>
+
 </resources>
