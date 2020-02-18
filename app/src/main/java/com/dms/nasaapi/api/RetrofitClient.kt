@@ -22,17 +22,30 @@ object RetrofitClient {
     }
         set(value) {}
 
-    var instanceMarsPhoto: Retrofit
-    get() {
+
+//    var instanceMarsPhoto: Retrofit
+//    get() {
+//        if(myInstanceMarsPhoto==null){
+//            myInstanceMarsPhoto = Retrofit.Builder()
+//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .baseUrl("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/")
+//                .build()
+//
+//        }
+//        return myInstanceMarsPhoto!!
+//    }
+//       set(value) {}
+    fun <T> buildMarsService(serviceType: Class<T>): T?{
         if(myInstanceMarsPhoto==null){
             myInstanceMarsPhoto = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/")
                 .build()
+            return myInstanceMarsPhoto?.create(serviceType)
+        } else {return myInstanceMarsPhoto!!.create(serviceType)}
 
-        }
-        return myInstanceMarsPhoto!!
+
     }
-        set(value) {}
 }

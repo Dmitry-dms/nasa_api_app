@@ -46,12 +46,12 @@ class AppRepository(application: Application) {
         apodDAO?.add(pod)
     }
 
-    fun getAllPhoto(): LiveData<List<MarsPhoto>>?{
-        return mrpDAO?.getAllMarsPhotos()
-    }
-    fun addMrp(marsPhoto: List<MarsPhoto>){
-        marsPhoto.forEach { mrpDAO?.add(it) }
-
-    }
+//    fun getAllPhoto(): LiveData<List<MarsPhoto>>?{
+//        return mrpDAO?.getAllMarsPhotos()
+//    }
+//    fun addMrp(marsPhoto: List<MarsPhoto>){
+//        marsPhoto.forEach { mrpDAO?.add(it) }
+//
+//    }
 
 }

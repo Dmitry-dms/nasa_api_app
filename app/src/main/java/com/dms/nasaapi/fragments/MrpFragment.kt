@@ -8,23 +8,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.dms.nasaapi.MainActivityViewModel
+import com.dms.nasaapi.MrpViewModel
 import com.dms.nasaapi.R
-import kotlinx.android.synthetic.main.fragment_apod.*
-import kotlinx.android.synthetic.main.fragment_apod.image
+import com.dms.nasaapi.paging.MarsPhotoAdapter
 import kotlinx.android.synthetic.main.fragment_mrp.*
 
 
 class MrpFragment : Fragment() {
-    private lateinit var viewModel: MainActivityViewModel
+   // private lateinit var viewModel: MainActivityViewModel
+
+    lateinit var adapter: MarsPhotoAdapter
+    lateinit var viewModel: MrpViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
+        viewModel=ViewModelProvider.AndroidViewModelFactory(activity!!.application).create(MrpViewModel::class.java)
 
         return inflater.inflate(R.layout.fragment_mrp, container, false)
     }
@@ -33,22 +38,45 @@ class MrpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel= ViewModelProvider.AndroidViewModelFactory(activity!!.application).create(
-            MainActivityViewModel::class.java)
-        viewModel?.getMarsPhoto()?.observe(viewLifecycleOwner, Observer {
-            if (it!=null) {
-                Log.d("TAG","${it[18].image}")
-                Glide.with(this)
-                    .load(it[18].image)
-                    .into(image_mrp)
+        adapter= MarsPhotoAdapter()
+        recycler_view_mrp.layoutManager=LinearLayoutManager(context)
 
 
-            }
-            else  Log.d("TAG", "error vm mars")
+
+        viewModel.marsPhotoPagedList.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
         })
+
+        recycler_view_mrp.adapter=adapter
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
 
 
     }
-
-
 }
+
+
+
+
+
+
+
+
+
+//        viewModel= ViewModelProvider.AndroidViewModelFactory(activity!!.application).create(
+//            MainActivityViewModel::class.java)
+//
+//        viewModel?.getMarsPhoto()?.observe(viewLifecycleOwner, Observer {
+//            if (it!=null) {
+//                Log.d("TAG","${it[18].image}")
+//                Glide.with(this)
+//                    .load(it[18].image)
+//                    .into(image_mrp)
+//
+//
+//            }
+//            else  Log.d("TAG", "error vm mars")
+//        })

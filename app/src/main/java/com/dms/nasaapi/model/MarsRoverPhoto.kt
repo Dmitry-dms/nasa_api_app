@@ -23,14 +23,14 @@ data class Rover(
 data class MarsPhoto(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id: Int =0,
+    var id: Int =0,
 
     @ColumnInfo(name = "earth_date")
     @SerializedName("earth_date")
-    val earthDate: String,
+    var earthDate: String,
     @ColumnInfo(name = "img_src")
     @SerializedName("img_src")
-    val image: String
+    var image: String
 //    val camera: Camera,
 //    val rover: Rover
 
