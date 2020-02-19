@@ -53,10 +53,10 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
         api = retrofit.create(NasaApiService::class.java)
         fetchData()
 
-        retrofitMars  =RetrofitClient.buildMarsService(NasaApiService::class.java)
+      //  retrofitMars  =RetrofitClient.buildMarsService(NasaApiService::class.java)
       //  api2 = retrofitMars?.create(NasaApiService::class.java)
        // retrofitMars = RetrofitClient.buildMarsService(NasaApiService::class.java)
-        getMars()
+       // getMars()
 
     }
     private fun fetchData() {

@@ -17,19 +17,19 @@ class MarsPhotoAdapter:PagedListAdapter<MarsPhoto, MarsPhotoAdapter.MarsViewHold
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MarsPhotoAdapter.MarsViewHolder {
+    ): MarsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item,parent,false)
         return MarsViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MarsPhotoAdapter.MarsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MarsViewHolder, position: Int) {
         val repo = getItem(position)
         repo?.let {
             holder.setData(repo)
         }
     }
 
-    class MarsViewHolder(val view: View) :RecyclerView.ViewHolder(view){
+    class MarsViewHolder(private val view: View) :RecyclerView.ViewHolder(view){
         fun setData(marsPhoto: MarsPhoto){
             view.earth_date.text=marsPhoto.earthDate
             Glide.with(view)
