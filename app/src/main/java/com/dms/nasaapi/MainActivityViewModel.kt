@@ -26,7 +26,7 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
     private var pod : LiveData<PictureOfTheDay>? = null
     private var marsPhoto : LiveData<List<MarsPhoto>>? = null
 
-    private var api: NasaApiService
+    private var api: NasaApiService?
   //  private var api2: NasaApiService?
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var retrofitMars: NasaApiService? = null
@@ -49,8 +49,9 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
 //    }
     init {
         Log.d("TAG","init vm")
-        val retrofit  = RetrofitClient.instance
-        api = retrofit.create(NasaApiService::class.java)
+       // val retrofit  = RetrofitClient.instance
+        api = RetrofitClient.buildApodService(NasaApiService::class.java)
+            //retrofit.create(NasaApiService::class.java)
         fetchData()
 
       //  retrofitMars  =RetrofitClient.buildMarsService(NasaApiService::class.java)
@@ -60,8 +61,8 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
 
     }
     private fun fetchData() {
-        compositeDisposable.add(api.getPictureOfTheDay()
-            .subscribeOn(Schedulers.io())
+        compositeDisposable.add(api?.getPictureOfTheDay()
+            !!.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
        //     .repeatWhen{it.delay(12, TimeUnit.SECONDS)}// интервал для запросов
             .subscribe({

@@ -1,6 +1,7 @@
 package com.dms.nasaapi.fragments
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,6 +29,7 @@ class MrpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         viewModel=ViewModelProvider.AndroidViewModelFactory(activity!!.application).create(MrpViewModel::class.java)
 
@@ -42,7 +44,6 @@ class MrpFragment : Fragment() {
         recycler_view_mrp.layoutManager=LinearLayoutManager(context)
 
 
-
         viewModel.marsPhotoPagedList.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
@@ -50,33 +51,9 @@ class MrpFragment : Fragment() {
         recycler_view_mrp.adapter=adapter
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-
-
-    }
 }
 
 
 
 
 
-
-
-
-
-//        viewModel= ViewModelProvider.AndroidViewModelFactory(activity!!.application).create(
-//            MainActivityViewModel::class.java)
-//
-//        viewModel?.getMarsPhoto()?.observe(viewLifecycleOwner, Observer {
-//            if (it!=null) {
-//                Log.d("TAG","${it[18].image}")
-//                Glide.with(this)
-//                    .load(it[18].image)
-//                    .into(image_mrp)
-//
-//
-//            }
-//            else  Log.d("TAG", "error vm mars")
-//        })

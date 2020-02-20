@@ -1,14 +1,19 @@
 package com.dms.nasaapi
 
 import android.app.Application
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.room.Room
+import com.dms.nasaapi.api.NasaApiService
+import com.dms.nasaapi.api.RetrofitClient
 import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.MarsRoverPhoto
 import com.dms.nasaapi.model.PictureOfTheDay
 import com.dms.nasaapi.room.apod.ApodDAO
 import com.dms.nasaapi.room.apod.ApodDatabase
 import com.dms.nasaapi.room.marsRoverPhotos.MrpDAO
 import com.dms.nasaapi.room.marsRoverPhotos.MrpDatabase
+import java.util.concurrent.Executors
 
 class AppRepository(application: Application) {
     private var instance: ApodDatabase? = null
@@ -17,9 +22,15 @@ class AppRepository(application: Application) {
     private var mrpInstance: MrpDatabase? = null
     private var mrpDAO: MrpDAO? = null
 
-    init{
+
+
+    init {
         if (instance == null) {
-            instance = Room.databaseBuilder(application.applicationContext, ApodDatabase::class.java, "ApodDB")
+            instance = Room.databaseBuilder(
+                application.applicationContext,
+                ApodDatabase::class.java,
+                "ApodDB"
+            )
                 .fallbackToDestructiveMigration() //когда меняем номер версии БД будет удалена и создана заного
                 .allowMainThreadQueries()
                 .build()
@@ -36,22 +47,26 @@ class AppRepository(application: Application) {
 
 
     }
+
     fun getApod(): LiveData<PictureOfTheDay>? {
         return apodDAO?.getApod()
     }
-    fun updateApod(pod: PictureOfTheDay){
+
+    fun updateApod(pod: PictureOfTheDay) {
         apodDAO?.update(pod)
     }
-    fun addApod(pod: PictureOfTheDay){
+
+    fun addApod(pod: PictureOfTheDay) {
         apodDAO?.add(pod)
     }
 
-//    fun getAllPhoto(): LiveData<List<MarsPhoto>>?{
+    //    fun getAllPhoto(): LiveData<List<MarsPhoto>>?{
 //        return mrpDAO?.getAllMarsPhotos()
 //    }
 //    fun addMrp(marsPhoto: List<MarsPhoto>){
 //        marsPhoto.forEach { mrpDAO?.add(it) }
 //
 //    }
+
 
 }

@@ -2,6 +2,7 @@ package com.dms.nasaapi.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
@@ -20,6 +21,7 @@ data class Rover(
     val total_photos: Int
 )
 @Entity(tableName = "MarsPhoto")
+   // indices = [Index(value = ["image"],unique = false)])
 data class MarsPhoto(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -34,7 +36,11 @@ data class MarsPhoto(
 //    val camera: Camera,
 //    val rover: Rover
 
-)
+){
+    var indexInResponse: Int = -1
+}
+
+
 data class Camera(
     val full_name: String
 

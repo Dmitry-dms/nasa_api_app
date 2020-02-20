@@ -20,4 +20,8 @@ interface MrpDAO {
 
     @Query("select * from MarsPhoto")
     fun getAllMarsPhotos():DataSource.Factory<Int,MarsPhoto>
+
+
+//    @Query("SELECT MAX(indexInResponse)+1 FROM MarsPhoto WHERE img_src =:image")
+//    fun getNextIndexInImage(image: String):Int
 }
