@@ -25,7 +25,8 @@ data class Rover(
 data class MarsPhoto(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int =0,
+    @SerializedName("id")
+    var id: Int,
 
     @ColumnInfo(name = "earth_date")
     @SerializedName("earth_date")

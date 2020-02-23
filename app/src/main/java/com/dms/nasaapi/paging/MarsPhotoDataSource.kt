@@ -7,11 +7,14 @@ import com.dms.nasaapi.api.NasaApiService
 import com.dms.nasaapi.api.RetrofitClient
 import com.dms.nasaapi.model.MarsPhoto
 import com.dms.nasaapi.model.MarsRoverPhoto
+import com.dms.nasaapi.room.marsRoverPhotos.MrpDatabase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MarsPhotoDataSource : PageKeyedDataSource<Int, MarsPhoto>() {
+
+
     //в самом начале вызывается
     override fun loadInitial(
         params: LoadInitialParams<Int>,
@@ -22,6 +25,7 @@ class MarsPhotoDataSource : PageKeyedDataSource<Int, MarsPhoto>() {
         call?.enqueue(object : Callback<MarsRoverPhoto> {
             override fun onFailure(call: Call<MarsRoverPhoto>, t: Throwable) {
                 Log.d("TAG", "mars error")
+
             }
 
             override fun onResponse(

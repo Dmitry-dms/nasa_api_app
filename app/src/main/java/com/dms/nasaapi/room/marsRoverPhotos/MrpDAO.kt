@@ -18,8 +18,8 @@ interface MrpDAO {
 //    @Query("select * from MarsPhoto")
 //    fun getAllMarsPhotos():LiveData<List<MarsPhoto>>
 
-    @Query("select * from MarsPhoto")
-    fun getAllMarsPhotos():DataSource.Factory<Int,MarsPhoto>
+    @Query("select * from MarsPhoto where id >= :id limit :size")
+    fun getAllMarsPhotos(id: Int,size:Int):DataSource.Factory<Int,MarsPhoto>
 
 
 //    @Query("SELECT MAX(indexInResponse)+1 FROM MarsPhoto WHERE img_src =:image")
