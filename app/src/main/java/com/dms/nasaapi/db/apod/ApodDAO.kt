@@ -1,4 +1,4 @@
-package com.dms.nasaapi.room.apod
+package com.dms.nasaapi.db.apod
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

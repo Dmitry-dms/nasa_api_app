@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@id/nav_home"
-        android:name="com.dms.nasaapi.fragments.ApodFragment"
+        android:name="com.dms.nasaapi.ui.ApodFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_apod" />
     <fragment
         android:id="@id/nav_gallery"
-        android:name="com.dms.nasaapi.fragments.MrpFragment"
+        android:name="com.dms.nasaapi.ui.MrpFragment"
         android:label="@string/gallry"
         tools:layout="@layout/fragment_mrp">
         <action

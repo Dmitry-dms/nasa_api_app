@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ApodFragment">
+    tools:context=".ui.ApodFragment">
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context=".MainActivity">
+            tools:context=".ui.MainActivity">
 
             <ImageView
                 android:id="@+id/image"

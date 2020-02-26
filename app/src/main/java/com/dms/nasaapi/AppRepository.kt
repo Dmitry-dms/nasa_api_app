@@ -1,50 +1,31 @@
 package com.dms.nasaapi
 
 import android.app.Application
-import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
 import androidx.room.Room
-import com.dms.nasaapi.api.NasaApiService
-import com.dms.nasaapi.api.RetrofitClient
 import com.dms.nasaapi.model.MarsPhoto
-import com.dms.nasaapi.model.MarsRoverPhoto
 import com.dms.nasaapi.model.PictureOfTheDay
-import com.dms.nasaapi.room.apod.ApodDAO
-import com.dms.nasaapi.room.apod.ApodDatabase
-import com.dms.nasaapi.room.marsRoverPhotos.MrpDAO
-import com.dms.nasaapi.room.marsRoverPhotos.MrpDatabase
-import java.util.concurrent.Executors
+import com.dms.nasaapi.db.apod.ApodDAO
+import com.dms.nasaapi.db.apod.ApodDatabase
+import com.dms.nasaapi.db.marsRoverPhotos.MrpDAO
+import com.dms.nasaapi.db.marsRoverPhotos.MrpDatabase
 
 class AppRepository(application: Application) {
     private var instance: ApodDatabase? = null
     private var apodDAO: ApodDAO? = null
-
-    private var mrpInstance: MrpDatabase? = null
-    private var mrpDAO: MrpDAO? = null
-
-
 
     init {
         if (instance == null) {
             instance = Room.databaseBuilder(
                 application.applicationContext,
                 ApodDatabase::class.java,
-                "ApodDB"
+                "ApodDB.db"
             )
                 .fallbackToDestructiveMigration() //когда меняем номер версии БД будет удалена и создана заного
                 .allowMainThreadQueries()
                 .build()
         }
         apodDAO = instance?.getApodDao()
-
-        if (mrpInstance ==null){
-            mrpInstance = Room.databaseBuilder(application.applicationContext, MrpDatabase::class.java, "MrpDB")
-                .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
-                .build()
-        }
-        mrpDAO = mrpInstance?.getMrpDao()
 
 
     }
@@ -60,17 +41,5 @@ class AppRepository(application: Application) {
     fun addApod(pod: PictureOfTheDay) {
         apodDAO?.add(pod)
     }
-    fun getMarsBySize(id:Int,size:Int): List<MarsPhoto>{
-        return mrpDAO!!.getAllMarsPhotos(id, size)
-    }
-
-    //    fun getAllPhoto(): LiveData<List<MarsPhoto>>?{
-//        return mrpDAO?.getAllMarsPhotos()
-//    }
-    fun addMrp(marsPhoto: List<MarsPhoto>){
-        marsPhoto.forEach { mrpDAO?.add(it) }
-
-    }
-
 
 }
