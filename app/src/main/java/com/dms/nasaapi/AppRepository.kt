@@ -3,6 +3,7 @@ package com.dms.nasaapi
 import android.app.Application
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Room
 import com.dms.nasaapi.api.NasaApiService
 import com.dms.nasaapi.api.RetrofitClient
@@ -59,14 +60,17 @@ class AppRepository(application: Application) {
     fun addApod(pod: PictureOfTheDay) {
         apodDAO?.add(pod)
     }
+    fun getMarsBySize(id:Int,size:Int): List<MarsPhoto>{
+        return mrpDAO!!.getAllMarsPhotos(id, size)
+    }
 
     //    fun getAllPhoto(): LiveData<List<MarsPhoto>>?{
 //        return mrpDAO?.getAllMarsPhotos()
 //    }
-//    fun addMrp(marsPhoto: List<MarsPhoto>){
-//        marsPhoto.forEach { mrpDAO?.add(it) }
-//
-//    }
+    fun addMrp(marsPhoto: List<MarsPhoto>){
+        marsPhoto.forEach { mrpDAO?.add(it) }
+
+    }
 
 
 }

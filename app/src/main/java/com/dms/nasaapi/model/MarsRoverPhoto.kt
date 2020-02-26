@@ -25,8 +25,8 @@ data class Rover(
 data class MarsPhoto(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    @SerializedName("id")
-    var id: Int,
+   // @SerializedName("id")
+    var idColumn: Int,
 
     @ColumnInfo(name = "earth_date")
     @SerializedName("earth_date")
@@ -37,9 +37,7 @@ data class MarsPhoto(
 //    val camera: Camera,
 //    val rover: Rover
 
-){
-    var indexInResponse: Int = -1
-}
+)
 
 
 data class Camera(

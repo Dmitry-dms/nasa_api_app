@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.dms.nasaapi.model.MarsPhoto
 import com.dms.nasaapi.model.MarsRoverPhoto
 
-@Database(entities = [MarsPhoto::class],version = 1)
+@Database(entities = [MarsPhoto::class],version = 2)
 abstract class MrpDatabase :RoomDatabase() {
 
     abstract fun getMrpDao(): MrpDAO
