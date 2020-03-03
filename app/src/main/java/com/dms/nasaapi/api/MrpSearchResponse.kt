@@ -1,6 +1,6 @@
 package com.dms.nasaapi.api
 
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 import com.google.gson.annotations.SerializedName
 
 data class MrpSearchResponse(

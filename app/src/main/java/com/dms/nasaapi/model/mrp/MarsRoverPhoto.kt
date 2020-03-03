@@ -1,4 +1,4 @@
-package com.dms.nasaapi.model
+package com.dms.nasaapi.model.mrp
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

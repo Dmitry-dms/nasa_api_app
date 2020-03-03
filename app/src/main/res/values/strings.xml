@@ -6,5 +6,7 @@
     <string name="menu_home">APOD</string>
     <string name="gallry">fragment_gallery</string>
     <string name="loading">Loading</string>
+    <string name="curiosity_about">"Curiosity is a car-sized rover designed to explore the crater Gale on Mars as part of NASA\'s Mars Science Laboratory mission (MSL). Curiosity was launched from Cape Canaveral on November 26, 2011, at 15:02 UTC and landed on Aeolis Palus inside Gale on Mars on August 6, 2012, 05:17 UTC. The Bradbury Landing site was less than 2.4 km (1.5 mi) from the center of the rover\'s touchdown target after a 560 million km (350 million mi) journey. The rover's goals include an investigation of the Martian climate and geology; assessment of whether the selected field site inside Gale has ever offered environmental conditions favorable for microbial life, including investigation of the role of water; and planetary habitability studies in preparation for human exploration."</string>
+    <string name="no_results">No results 😓</string>
 
 </resources>

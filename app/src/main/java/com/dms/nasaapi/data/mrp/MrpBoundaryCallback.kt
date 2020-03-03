@@ -1,12 +1,13 @@
-package com.dms.nasaapi.data
+package com.dms.nasaapi.data.mrp
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.dms.nasaapi.api.NasaApiService
 import com.dms.nasaapi.api.searchMarsPhotos
 import com.dms.nasaapi.db.marsRoverPhotos.MrpLocalCache
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 
 class MrpBoundaryCallback(
     private val query: String,
@@ -26,9 +27,11 @@ class MrpBoundaryCallback(
     private var isRequestInProgress = false
 
     fun requestAndSaveData(query: String) {
+        Log.d("TAG2", "mrp request")
         if (isRequestInProgress) return
         isRequestInProgress = true
-        searchMarsPhotos(service, query, lastRequestedPage, NETWORK_PAGE_SIZE, { photos ->
+        searchMarsPhotos(service, query, lastRequestedPage,
+            NETWORK_PAGE_SIZE, { photos ->
             cache.insert(photos) {
                 lastRequestedPage++
                 isRequestInProgress = false

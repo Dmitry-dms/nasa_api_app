@@ -1,21 +1,22 @@
-package com.dms.nasaapi.ui
+package com.dms.nasaapi.ui.mrp
 
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dms.nasaapi.Injection
 import com.dms.nasaapi.R
-import com.dms.nasaapi.ui.mrp.MarsPhotoAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_mrp.*
 
 
@@ -24,46 +25,63 @@ class MrpFragment : Fragment() {
 
     private val adapter = MarsPhotoAdapter()
     private lateinit var viewModel: MrpViewModel
+    private var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val coordinatorLayout= inflater.inflate(R.layout.fragment_mrp, container, false) as CoordinatorLayout
+        val filterIcon = coordinatorLayout.findViewById<ImageView>(R.id.filterIcon)
+        val contentLayout =
+            coordinatorLayout.findViewById<LinearLayout>(R.id.contentLayout)
+        sheetBehavior = BottomSheetBehavior.from(contentLayout)
+        (sheetBehavior as BottomSheetBehavior<LinearLayout>?)?.setFitToContents(false)
+        (sheetBehavior as BottomSheetBehavior<LinearLayout>?)?.setHideable(false) //prevents the boottom sheet from completely hiding off the screen
 
+        (sheetBehavior as BottomSheetBehavior<LinearLayout>?)?.setState(BottomSheetBehavior.STATE_EXPANDED) //initially state to fully expanded
+
+
+        filterIcon.setOnClickListener {
+            toggleFilters()
+        }
         // get the view model
-
          viewModel = ViewModelProvider(
             this,
             Injection.provideViewModelFactory(context!!)
         ).get(MrpViewModel::class.java)
 
-        return inflater.inflate(R.layout.fragment_mrp, container, false)
+        return coordinatorLayout
+    }
+    private fun toggleFilters() {
+        if (sheetBehavior?.state === BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        } else {
+            sheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        adapter= MarsPhotoAdapter()
-//        recycler_view_mrp.layoutManager=LinearLayoutManager(context)
-//
-//
-//        viewModel.marsPhotoPagedList.observe(viewLifecycleOwner, Observer {
-//            adapter.submitList(it)
-//        })
-//
-//        recycler_view_mrp.adapter=adapter
+
         val linearLayoutManager = LinearLayoutManager(context)
         recycler_view_mrp.layoutManager=linearLayoutManager
         // add dividers between RecyclerView's row items
         val decoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         recycler_view_mrp.addItemDecoration(decoration)
-        // setupScrollListener()
+
 
         initAdapter()
         val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: DEFAULT_QUERY
         viewModel.searchMrp(query)
         initSearch(query)
+
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -73,7 +91,7 @@ class MrpFragment : Fragment() {
     private fun initAdapter() {
         recycler_view_mrp.adapter = adapter
         viewModel.marsPhotoPagedList.observe(viewLifecycleOwner, Observer {
-            Log.d("MrpFragment", "list: ${it?.size}")
+            Log.d("TAG3", "list: ${it?.size}")
             showEmptyList(it?.size == 0)
             adapter.submitList(it)
         })

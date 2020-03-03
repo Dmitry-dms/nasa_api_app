@@ -1,12 +1,10 @@
-package com.dms.nasaapi.ui
+package com.dms.nasaapi.ui.mrp
 
-import android.app.Application
 import androidx.lifecycle.*
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.dms.nasaapi.data.MrpRepository
-import com.dms.nasaapi.model.MarsPhoto
-import com.dms.nasaapi.model.MrpSearchResult
+import com.dms.nasaapi.data.mrp.MrpRepository
+import com.dms.nasaapi.model.mrp.MarsPhoto
+import com.dms.nasaapi.model.mrp.MrpSearchResult
 
 
 /**

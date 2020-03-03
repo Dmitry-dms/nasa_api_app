@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dms.nasaapi.R
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class MarsViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {

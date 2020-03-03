@@ -2,7 +2,7 @@ package com.dms.nasaapi.db.marsRoverPhotos
 
 import android.util.Log
 import androidx.paging.DataSource
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 import java.util.concurrent.Executor
 
 class MrpLocalCache(private val mrpDAO: MrpDAO,
@@ -24,7 +24,7 @@ class MrpLocalCache(private val mrpDAO: MrpDAO,
      * any characters between the words.
      * @param name repository name
      */
-    fun getAllMarsPhoto():DataSource.Factory<Int,MarsPhoto>{
+    fun getAllMarsPhoto():DataSource.Factory<Int, MarsPhoto>{
         // appending '%' so we can allow other characters to be before and after the query string
        // val query = "%${name.replace(' ', '%')}%" если более сложный запрос, заменяем пробелы процентами
 // @Query("SELECT * FROM repos WHERE (name LIKE :queryString) OR (description LIKE " +

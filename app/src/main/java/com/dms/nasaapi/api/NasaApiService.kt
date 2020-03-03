@@ -1,8 +1,9 @@
 package com.dms.nasaapi.api
 
 import android.util.Log
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 import com.dms.nasaapi.model.PictureOfTheDay
+import com.dms.nasaapi.model.image_library.ImageLibrarySearchResponse
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +17,7 @@ import retrofit2.http.Query
 
 
 private const val TAG = "NasaApiService"
-private const val IN_QUALIFIER = "in:name,description"
+
 
 /**
  * Search repos based on a query.
@@ -65,6 +66,7 @@ interface NasaApiService {
 
 //    @GET("photos?sol=1000&api_key=DEMO_KEY")
 //    fun getMarsPhoto():Observable<MarsRoverPhoto>
+
 
     @GET("photos?sol=1000&api_key=DEMO_KEY")
     fun getMarsPhoto(

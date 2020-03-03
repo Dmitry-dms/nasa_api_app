@@ -2,11 +2,14 @@ package com.dms.nasaapi
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
+import com.dms.nasaapi.api.ImageApiLibraryService
 import com.dms.nasaapi.api.NasaApiService
-import com.dms.nasaapi.data.MrpRepository
+import com.dms.nasaapi.data.image_library.ImLRepository
+import com.dms.nasaapi.data.mrp.MrpRepository
 import com.dms.nasaapi.db.marsRoverPhotos.MrpDatabase
 import com.dms.nasaapi.db.marsRoverPhotos.MrpLocalCache
-import com.dms.nasaapi.ui.MrpViewModelFactory
+import com.dms.nasaapi.ui.image_and_video.ImLViewModelFactory
+import com.dms.nasaapi.ui.mrp.MrpViewModelFactory
 import java.util.concurrent.Executors
 
 /**
@@ -29,7 +32,10 @@ object Injection {
      * [MrpLocalCache]
      */
     private fun provideMrpRepository(context: Context): MrpRepository {
-        return MrpRepository(NasaApiService.create(), provideCache(context))
+        return MrpRepository(
+            NasaApiService.create(),
+            provideCache(context)
+        )
     }
 
     /**
@@ -37,6 +43,16 @@ object Injection {
      * [ViewModel] objects.
      */
     fun provideViewModelFactory(context: Context): ViewModelProvider.Factory {
-        return MrpViewModelFactory(provideMrpRepository(context))
+        return MrpViewModelFactory(
+            provideMrpRepository(
+                context
+            )
+        )
+    }
+    private fun provideImLRepository(): ImLRepository{
+        return ImLRepository(ImageApiLibraryService.create())
+    }
+    fun provideImLViewModelFactory():ViewModelProvider.Factory{
+        return ImLViewModelFactory(provideImLRepository())
     }
 }

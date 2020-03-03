@@ -3,7 +3,7 @@ package com.dms.nasaapi.ui.mrp
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 
 class MarsPhotoAdapter :
     PagedListAdapter<MarsPhoto, MarsViewHolder>(REPO_COMPARATOR) {

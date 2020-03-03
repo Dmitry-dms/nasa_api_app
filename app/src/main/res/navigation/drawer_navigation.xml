@@ -12,11 +12,20 @@
         tools:layout="@layout/fragment_apod" />
     <fragment
         android:id="@id/nav_gallery"
-        android:name="com.dms.nasaapi.ui.MrpFragment"
+        android:name="com.dms.nasaapi.ui.mrp.MrpFragment"
         android:label="@string/gallry"
         tools:layout="@layout/fragment_mrp">
         <action
             android:id="@+id/action_nav_gallery_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_library"
+        android:name="com.dms.nasaapi.ui.image_and_video.ImageLibraryFragment"
+        android:label="image_library_fragment"
+        tools:layout="@layout/image_library_fragment" >
+        <action
+            android:id="@+id/action_imageLibraryFragment_to_nav_home"
             app:destination="@id/nav_home" />
     </fragment>
 

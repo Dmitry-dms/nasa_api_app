@@ -1,11 +1,10 @@
 package com.dms.nasaapi.db.marsRoverPhotos
 
 import android.content.Context
-import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 
 @Database(entities = [MarsPhoto::class], version = 1, exportSchema = false)
 abstract class MrpDatabase : RoomDatabase() {

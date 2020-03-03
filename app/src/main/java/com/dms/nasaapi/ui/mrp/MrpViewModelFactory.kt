@@ -1,8 +1,8 @@
-package com.dms.nasaapi.ui
+package com.dms.nasaapi.ui.mrp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.dms.nasaapi.data.MrpRepository
+import com.dms.nasaapi.data.mrp.MrpRepository
 
 
 class MrpViewModelFactory(private val repository: MrpRepository) : ViewModelProvider.Factory {

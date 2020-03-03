@@ -1,6 +1,7 @@
 package com.dms.nasaapi.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,7 +14,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
 
-    //  private lateinit var viewModel: MainActivityViewModel
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -26,11 +26,12 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
-                R.id.nav_gallery
+                R.id.nav_gallery,
+                R.id.nav_library
             ), drawer_layout
         )
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
         nav_view.setupWithNavController(navController)
 
 

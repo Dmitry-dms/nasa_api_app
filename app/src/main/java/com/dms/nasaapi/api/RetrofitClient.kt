@@ -8,6 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
     private var myInstance: Retrofit? = null
+    private var myInstance2: Retrofit? = null
 
     private val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     private val okHttp=OkHttpClient.Builder().addInterceptor(logger)
@@ -29,5 +30,6 @@ object RetrofitClient {
 
 
     }
+
 
 }

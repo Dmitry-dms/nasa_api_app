@@ -7,9 +7,10 @@ import androidx.lifecycle.LiveData
 import com.dms.nasaapi.AppRepository
 import com.dms.nasaapi.api.NasaApiService
 import com.dms.nasaapi.api.RetrofitClient
-import com.dms.nasaapi.model.MarsPhoto
+import com.dms.nasaapi.model.mrp.MarsPhoto
 
 import com.dms.nasaapi.model.PictureOfTheDay
+import com.dms.nasaapi.model.image_library.ImageLibrarySearchResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,8 +27,7 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
     private var api: NasaApiService?
   //  private var api2: NasaApiService?
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private var retrofitMars: NasaApiService? = null
-
+    private var retrofitImage: NasaApiService? = null
 
 
     fun updateApod(pod: PictureOfTheDay){
@@ -51,10 +51,9 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
             //retrofit.create(NasaApiService::class.java)
         fetchData()
 
-      //  retrofitMars  =RetrofitClient.buildMarsService(NasaApiService::class.java)
-      //  api2 = retrofitMars?.create(NasaApiService::class.java)
-       // retrofitMars = RetrofitClient.buildMarsService(NasaApiService::class.java)
-       // getMars()
+     //   retrofitImage  =RetrofitClient.buildLibService(NasaApiService::class.java)
+
+       // getImage("mars","1")
 
     }
     private fun fetchData() {
@@ -74,27 +73,30 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
 
         )
     }
-//    private fun getMars(){
-//        val call = retrofitMars?.getMarsPhoto(1)
-//        call?.enqueue(object: Callback<MarsRoverPhoto> {
-//            override fun onFailure(call: Call<MarsRoverPhoto>, t: Throwable) {
-//                Log.d("TAG","mars error")
+//    private fun getImage(q:String,page:String) {
+//        val call = retrofitImage?.getImageBySearch(q, page)
+//        call?.enqueue(object : Callback<ImageLibrarySearchResponse> {
+//            override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
+//                Log.d("TAG","ошибка либрари $t")
 //            }
 //
 //            override fun onResponse(
-//                call: Call<MarsRoverPhoto>,
-//                response: Response<MarsRoverPhoto>
+//                call: Call<ImageLibrarySearchResponse>,
+//                response: Response<ImageLibrarySearchResponse>
 //            ) {
 //                if (response.isSuccessful){
 //                    val apiResponse = response.body()!!
-//                    val responseItems = apiResponse.photos
+//                    val responseItems = apiResponse.collection.items[1].links[0].href
 //
-//                    val size = responseItems?.let { responseItems.size.toString() }
-//                    Log.d("TAG","kol-vo v massive $size")
+//                   // val size = responseItems?.let { responseItems.size.toString() }
+//                   // Log.d("TAG","kol-vo v massive $size")
+//                    Log.d("TAG","res body ${responseItems}")
 //                }
 //            }
 //
+//
 //        })
+//    }
 
 //        compositeDisposable.add(api2.getMarsPhoto()
 //            .subscribeOn(Schedulers.io())
