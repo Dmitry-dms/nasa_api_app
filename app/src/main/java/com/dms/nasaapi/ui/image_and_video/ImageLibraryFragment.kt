@@ -1,38 +1,68 @@
 package com.dms.nasaapi.ui.image_and_video
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dms.nasaapi.Injection
-
 import com.dms.nasaapi.R
-import kotlinx.android.synthetic.main.fragment_mrp.*
+import com.dms.nasaapi.model.image_library.Status
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.image_library_fragment.*
+
 
 class ImageLibraryFragment : Fragment() {
     private val adapter = ImLAdapter()
 
 
     private lateinit var viewModel: ImageLibraryViewModel
+    private var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    //lateinit var layout: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProviders.of(this,Injection.provideImLViewModelFactory()).get(ImageLibraryViewModel::class.java)
-        return inflater.inflate(R.layout.image_library_fragment, container, false)
+        val coordinatorLayout = inflater.inflate(R.layout.image_library_fragment,container,false) as CoordinatorLayout
+        val filterIcon = coordinatorLayout.findViewById<ImageView>(R.id.icon)
+        val contentLayout = coordinatorLayout.findViewById<LinearLayout>(R.id.layout_main)
 
+      //  layout=coordinatorLayout.findViewById(R.id.linearLayout_iml)
+        sheetBehavior = BottomSheetBehavior.from(contentLayout)
+
+        sheetBehavior?.apply {
+            isFitToContents=false
+            isHideable = false //prevents the boottom sheet from completely hiding off the screen
+            state=BottomSheetBehavior.STATE_EXPANDED //initially state to fully expanded
+        }
+
+
+        filterIcon.setOnClickListener {
+            toggleFilters()
+        }
+        viewModel = ViewModelProviders.of(this, Injection.provideImLViewModelFactory())
+            .get(ImageLibraryViewModel::class.java)
+        return coordinatorLayout
+
+    }
+    private fun toggleFilters() {
+        if (sheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        } else {
+            sheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
     }
 
 
@@ -45,6 +75,7 @@ class ImageLibraryFragment : Fragment() {
         viewModel.searchImages(query)
         initSearch(query)
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(LAST_SEARCH_QUERY, viewModel.lastQueryValue())
@@ -54,15 +85,25 @@ class ImageLibraryFragment : Fragment() {
         image_lib_rv.adapter = adapter
         viewModel.items.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
-           // Log.d("TAG2","${viewModel.isEmpty.value}")
+            Log.d("TAG2", "size = ${it.size}")
         })
-        viewModel.networkErrors.observe(viewLifecycleOwner, Observer<String> {
-            Log.d("TAG2", it)
-            Toast.makeText(context, "\uD83D\uDE28 Wooops $it", Toast.LENGTH_LONG).show()
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            Log.d("TAG2", " network state ${it.status}")
+            showEmptyList(it.status == Status.FAILED)
         })
-        viewModel.isEmpty.observe(viewLifecycleOwner, Observer {
+        viewModel.refreshState.observe(viewLifecycleOwner, Observer {
+            Log.d("TAG2", " refresh state ${it.status}")
+            showEmptyList(it.status == Status.FAILED)
 
         })
+        viewModel.emptyState.observe(viewLifecycleOwner, Observer {
+//            if (it.status == Status.EMPTY) {
+//                Toast.makeText(context, "\uD83D\uDE28 Wooops, no results", Toast.LENGTH_LONG)
+//                    .show()
+//            }
+            showEmptyList(it.status == Status.EMPTY)
+        })
+
 
     }
 
@@ -76,26 +117,39 @@ class ImageLibraryFragment : Fragment() {
             }
         }
     }
+
     private fun initSearch(query: String) {
         search_repo.setText(query)
 
-        search_repo.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {
-                updateListFromInput()
-                true
-            } else {
-                false
-            }
-        }
-        search_repo.setOnKeyListener { _, keyCode, event ->
+//        search_repo.setOnEditorActionListener { it, actionId, _ ->
+//            if (actionId == EditorInfo.IME_ACTION_GO) {
+//                Log.d("keyboard", "editor")
+//                val imm =
+//                    it.getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                imm.hideSoftInputFromWindow(it.windowToken, 0)
+//
+//                updateListFromInput()
+//                true
+//            } else {
+//                false
+//            }
+//        }
+        search_repo.setOnKeyListener { it, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                val imm =
+                    it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(it.windowToken, 0)
+
                 updateListFromInput()
+
                 true
             } else {
                 false
             }
         }
     }
+
     private fun showEmptyList(show: Boolean) {
         if (show) {
             emptyList_iml.visibility = View.VISIBLE
@@ -105,6 +159,7 @@ class ImageLibraryFragment : Fragment() {
             image_lib_rv.visibility = View.VISIBLE
         }
     }
+
     companion object {
         private const val LAST_SEARCH_QUERY: String = "last_search_query"
         private const val DEFAULT_QUERY = "Mars"

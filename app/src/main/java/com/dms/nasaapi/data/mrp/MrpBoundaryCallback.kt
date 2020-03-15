@@ -27,6 +27,7 @@ class MrpBoundaryCallback(
     private var isRequestInProgress = false
 
     fun requestAndSaveData(query: String) {
+
         Log.d("TAG2", "mrp request")
         if (isRequestInProgress) return
         isRequestInProgress = true
@@ -54,4 +55,5 @@ class MrpBoundaryCallback(
     companion object {
         private const val NETWORK_PAGE_SIZE = 50
     }
+
 }

@@ -29,7 +29,11 @@ class ImLViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
         if (item.data[0].media_type == "image") {//skip video
             this.item = item
             tv.text = item.data[0].title
-            Glide.with(view).load(item.links[0].href).into(view.image_lib)
+            Glide
+                .with(view)
+                .load(item.links[0].href)
+                .into(view.image_lib)
+
         }
 //        else{
 //            tv.text="video"

@@ -22,12 +22,12 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
     private val appRepository: AppRepository =
         AppRepository(application)
     private var pod : LiveData<PictureOfTheDay>? = null
-    private var marsPhoto : LiveData<List<MarsPhoto>>? = null
+
 
     private var api: NasaApiService?
-  //  private var api2: NasaApiService?
+
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private var retrofitImage: NasaApiService? = null
+
 
 
     fun updateApod(pod: PictureOfTheDay){
@@ -35,25 +35,15 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
 
     }
     fun getApod(): LiveData<PictureOfTheDay>? {
-       // fetchData()
         pod = appRepository?.getApod()
         return pod
     }
-//    fun getMarsPhoto():LiveData<List<MarsPhoto>>? {
-//        marsPhoto=appRepository?.getAllPhoto()
-//        return marsPhoto
-//
-//    }
+
     init {
         Log.d("TAG","init vm")
-       // val retrofit  = RetrofitClient.instance
+
         api = RetrofitClient.buildApodService(NasaApiService::class.java)
-            //retrofit.create(NasaApiService::class.java)
         fetchData()
-
-     //   retrofitImage  =RetrofitClient.buildLibService(NasaApiService::class.java)
-
-       // getImage("mars","1")
 
     }
     private fun fetchData() {
@@ -73,44 +63,5 @@ class MainActivityViewModel(application: Application): AndroidViewModel(applicat
 
         )
     }
-//    private fun getImage(q:String,page:String) {
-//        val call = retrofitImage?.getImageBySearch(q, page)
-//        call?.enqueue(object : Callback<ImageLibrarySearchResponse> {
-//            override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
-//                Log.d("TAG","ошибка либрари $t")
-//            }
-//
-//            override fun onResponse(
-//                call: Call<ImageLibrarySearchResponse>,
-//                response: Response<ImageLibrarySearchResponse>
-//            ) {
-//                if (response.isSuccessful){
-//                    val apiResponse = response.body()!!
-//                    val responseItems = apiResponse.collection.items[1].links[0].href
-//
-//                   // val size = responseItems?.let { responseItems.size.toString() }
-//                   // Log.d("TAG","kol-vo v massive $size")
-//                    Log.d("TAG","res body ${responseItems}")
-//                }
-//            }
-//
-//
-//        })
-//    }
-
-//        compositeDisposable.add(api2.getMarsPhoto()
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(
-//                {success ->
-//                    appRepository.addMrp(success.photos)
-//                    Log.d("TAG","success retrofit mars")
-//                },
-//                {error -> error.printStackTrace()
-//                    Log.d("TAG","error retrofit mars") }
-//            )
-//
-//        )
-   // }
 
 }

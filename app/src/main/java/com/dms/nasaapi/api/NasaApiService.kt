@@ -3,6 +3,7 @@ package com.dms.nasaapi.api
 import android.util.Log
 import com.dms.nasaapi.model.mrp.MarsPhoto
 import com.dms.nasaapi.model.PictureOfTheDay
+import com.dms.nasaapi.model.epic.EpicSearchResponse
 import com.dms.nasaapi.model.image_library.ImageLibrarySearchResponse
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
@@ -13,6 +14,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -64,15 +66,12 @@ interface NasaApiService {
     @GET("apod?api_key=EitOWCCokyblxbk3Gs5JwiQyiZH9qIpBpDB5G2je")
     fun getPictureOfTheDay(): Observable<PictureOfTheDay>
 
-//    @GET("photos?sol=1000&api_key=DEMO_KEY")
-//    fun getMarsPhoto():Observable<MarsRoverPhoto>
-
-
     @GET("photos?sol=1000&api_key=DEMO_KEY")
     fun getMarsPhoto(
         @Query("page") page: Int,
         @Query("per_page") itemsPerPage: Int
     ): Call<MrpSearchResponse>
+
 
     companion object {
         private const val BASE_URL = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/"

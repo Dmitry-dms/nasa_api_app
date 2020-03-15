@@ -1,142 +1,135 @@
 package com.dms.nasaapi.data.image_library
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.dms.nasaapi.api.ImageApiLibraryService
-import com.dms.nasaapi.model.image_library.Data
 import com.dms.nasaapi.model.image_library.ImageLibrarySearchResponse
 import com.dms.nasaapi.model.image_library.Item
-import com.dms.nasaapi.model.image_library.Link
+import com.dms.nasaapi.model.image_library.NetworkState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ImLDataSource(val query: String) : PageKeyedDataSource<Int, Item>() {
+class ImLDataSource(val query: String, val api: ImageApiLibraryService) :
+    PageKeyedDataSource<Int, Item>() {
     companion object {
         var lastRequestedPage = 1
     }
-    var isEmpty = true
-    private val emptyness = MutableLiveData<String>()
-    val em : LiveData<String>
-    get() = emptyness
-//    private val data:Data=Data("","0000","","")
-//    private val dataList: List<Data> = arrayListOf(data)
-//    private val emptyLinkList: List<Link> = emptyList()
-//
-//    private val item: Item = Item(dataList, emptyLinkList)
-    private val emptyList: List<Item> = emptyList()
+
     private var isRequestInProgress = false
+    private val completableJob = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + completableJob) //coroutine scope
+    private var retry: (() -> Any)? = null
+    val networkState = MutableLiveData<NetworkState>()
+    val initialLoad = MutableLiveData<NetworkState>() //we need to observe these
+    val isEmpty = MutableLiveData<NetworkState>()
+
+    fun retryAllFailed() {
+        val prevRetry = retry
+        retry = null
+        prevRetry?.invoke()
+    }
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Item>
     ) {
-        if (isRequestInProgress) return
-        isRequestInProgress = true
-        val service = ImageApiLibraryService.create()
-        val call = service.getImageBySearch(query, lastRequestedPage)
-        call.enqueue(object : Callback<ImageLibrarySearchResponse> {
-            override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
-                emptyness.postValue("true")
-                isRequestInProgress = false
-                Log.d("TAG2", "load initial response error")
-                callback.onResult(emptyList, null, null)
-            }
-
-            override fun onResponse(
-                call: Call<ImageLibrarySearchResponse>,
-                response: Response<ImageLibrarySearchResponse>
-            ) {
-                if (response.isSuccessful) {
-                    emptyness.postValue("false")
-                    val apiResponse = response.body()!!
-                    val responseItems = apiResponse.collection.items
-                    Log.d("TAG2", "load initial")
-                    responseItems?.let {
-                        callback.onResult(
-                            responseItems,
-                            null,
-                            lastRequestedPage + 1
-                        )
-
-                        isRequestInProgress = false
+        coroutineScope.launch(Dispatchers.IO) {
+            try {
+                initialLoad.postValue(NetworkState.LOADING)
+                val primarySearchResponse = callLatestSearch(query, 1)
+                primarySearchResponse.enqueue(object : Callback<ImageLibrarySearchResponse> {
+                    override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
+                        initialLoad.postValue(NetworkState.error("Network error"))
                     }
+
+                    override fun onResponse(
+                        call: Call<ImageLibrarySearchResponse>,
+                        response: Response<ImageLibrarySearchResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            retry = null
+                            initialLoad.postValue(NetworkState.LOADED)
+                            if (response.body()!!.collection.items.isEmpty()){
+                                isEmpty.postValue(NetworkState.EMPTY)
+                                callback.onResult(response.body()!!.collection.items, null,2)
+                            } else {
+                                isEmpty.postValue(NetworkState.FULL)
+                                callback.onResult(response.body()!!.collection.items, null, 2)
+                            }
+                        } else {
+                            retry = {
+                                loadInitial(params, callback)
+                            }
+                            initialLoad.postValue(NetworkState.error("Network error"))
+                        }
+                    }
+                })
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                retry = {
+                    loadInitial(params, callback)
                 }
+                initialLoad.postValue(NetworkState.error("Network error"))
             }
 
-        })
+        }
+
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Item>) {
-        if (isRequestInProgress) return
-        isRequestInProgress = true
-        val service = ImageApiLibraryService.create()
-        val call = service.getImageBySearch(query, params.key)
-        call.enqueue(object : Callback<ImageLibrarySearchResponse> {
-            override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
-                emptyness.postValue("true")
-                isRequestInProgress = false
-                callback.onResult(emptyList, null)
-                Log.d("TAG2", "load after res error")
-            }
-
-            override fun onResponse(
-                call: Call<ImageLibrarySearchResponse>,
-                response: Response<ImageLibrarySearchResponse>
-            ) {
-                if (response.isSuccessful) {
-                    emptyness.postValue("false")
-                    val apiResponse = response.body()!!
-                    val responseItems = apiResponse.collection.items
-
-                    val key =
-                        if (apiResponse.collection.items.size > params.key) params.key + 1 else 0
-                    Log.d("TAG2", "load after")
-                    responseItems?.let {
-                        callback.onResult(responseItems, key)
-                        isRequestInProgress = false
+        coroutineScope.launch(Dispatchers.IO) {
+            try {
+                networkState.postValue(NetworkState.LOADING)
+                val primarySearchResponse = callLatestSearch(query, params.key)
+                primarySearchResponse.enqueue(object : Callback<ImageLibrarySearchResponse> {
+                    override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
+                        networkState.postValue(NetworkState.error("Network error"))
                     }
 
+                    override fun onResponse(
+                        call: Call<ImageLibrarySearchResponse>,
+                        response: Response<ImageLibrarySearchResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            retry = null
+                            networkState.postValue(NetworkState.LOADED)
+                            callback.onResult(response.body()!!.collection.items, params.key.inc())
+                        } else {
+                            retry = {
+                                loadAfter(params, callback)
+                            }
+                            networkState.postValue(NetworkState.error("Network error"))
+                        }
+                    }
+                })
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                retry = {
+                    loadAfter(params, callback)
                 }
+                networkState.postValue(NetworkState.error("Network error"))
             }
 
-        })
+        }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Item>) {
-        if (isRequestInProgress) return
-        isRequestInProgress = true
-        val service = ImageApiLibraryService.create()
-        val call = service.getImageBySearch(query, params.key)
-        call.enqueue(object : Callback<ImageLibrarySearchResponse> {
-            override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
-                isEmpty=true
-                isRequestInProgress = false
-                callback.onResult(emptyList, null)
-                Log.d("TAG2", "load before response error")
-            }
 
-            override fun onResponse(
-                call: Call<ImageLibrarySearchResponse>,
-                response: Response<ImageLibrarySearchResponse>
-            ) {
-                if (response.isSuccessful) {
-                    isEmpty=false
-                    Log.d("TAG2", "load before")
-                    val apiResponse = response.body()!!
-                    val responseItems = apiResponse.collection.items
+    }
 
-                    val key = if (params.key > 1) params.key - 1 else 0
-                    responseItems?.let {
-                        callback.onResult(responseItems, key)
-                        isRequestInProgress = false
-                    }
+    private suspend fun callLatestSearch(
+        query: String,
+        page: Int
+    ): Call<ImageLibrarySearchResponse> = api.getImageBySearch(query, page)
 
-                }
-            }
-
-        })
+    fun clearCoroutineJobs() {
+        completableJob.cancel()
     }
 }

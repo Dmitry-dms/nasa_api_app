@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.nav_home,
                 R.id.nav_gallery,
-                R.id.nav_library
+                R.id.nav_library,
+                R.id.nav_epic
             ), drawer_layout
         )
 

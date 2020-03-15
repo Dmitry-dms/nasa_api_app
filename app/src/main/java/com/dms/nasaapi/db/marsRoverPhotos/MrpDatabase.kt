@@ -21,7 +21,7 @@ abstract class MrpDatabase : RoomDatabase() {
             }
 
 
-        fun buildDatabase(context: Context) =
+        private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
                 MrpDatabase::class.java, "MrpDB.db"

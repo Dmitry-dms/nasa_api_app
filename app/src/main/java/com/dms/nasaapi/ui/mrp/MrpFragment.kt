@@ -27,6 +27,8 @@ class MrpFragment : Fragment() {
     private lateinit var viewModel: MrpViewModel
     private var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
     }
@@ -59,7 +61,9 @@ class MrpFragment : Fragment() {
     }
     private fun toggleFilters() {
         if (sheetBehavior?.state === BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior?.setState(BottomSheetBehavior.STATE_COLLAPSED)
+            sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            sheetBehavior?.peekHeight=resources.displayMetrics.heightPixels-300
+
         } else {
             sheetBehavior?.setState(BottomSheetBehavior.STATE_EXPANDED)
         }
