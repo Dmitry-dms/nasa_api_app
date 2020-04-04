@@ -3,8 +3,9 @@ package com.dms.nasaapi.ui.mrp
 import androidx.lifecycle.*
 import androidx.paging.PagedList
 import com.dms.nasaapi.data.mrp.MrpRepository
+import com.dms.nasaapi.model.image_library.Listing
+import com.dms.nasaapi.model.image_library.NetworkState
 import com.dms.nasaapi.model.mrp.MarsPhoto
-import com.dms.nasaapi.model.mrp.MrpSearchResult
 
 
 /**
@@ -15,14 +16,15 @@ class MrpViewModel(private val repository: MrpRepository) : ViewModel() {
 
 
     private val queryLiveData = MutableLiveData<String>()
-    private val mrpResult: LiveData<MrpSearchResult> = Transformations.map(queryLiveData) {
+    private val result: LiveData<Listing<MarsPhoto>> = Transformations.map(queryLiveData) {
         repository.search(it)
     }
 
     val marsPhotoPagedList: LiveData<PagedList<MarsPhoto>> =
-        Transformations.switchMap(mrpResult) { it -> it.data }
-    val networkErrors: LiveData<String> = Transformations.switchMap(mrpResult) { it ->
-        it.networkErrors
+        Transformations.switchMap(result) { it -> it.pagedList }
+
+    val networkErrors: LiveData<NetworkState> = Transformations.switchMap(result) { it ->
+        it.networkState
     }
 
     /**
@@ -37,4 +39,12 @@ class MrpViewModel(private val repository: MrpRepository) : ViewModel() {
      * Get the last query value.
      */
     fun lastQueryValue(): String? = queryLiveData.value
+
+    override fun onCleared() {
+        super.onCleared()
+        result.value?.clearCoroutineJobs?.invoke()
+    }
+    fun retry(){
+        result.value?.retry?.invoke()
+    }
 }

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@id/nav_home"
-        android:name="com.dms.nasaapi.ui.ApodFragment"
+        android:name="com.dms.nasaapi.ui.apod.ApodFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_apod" />
     <fragment

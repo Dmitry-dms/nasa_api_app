@@ -8,7 +8,7 @@ import com.dms.nasaapi.model.mrp.MarsPhoto
 @Dao
 interface MrpDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(marsPhoto: List<MarsPhoto>)
+    suspend fun insert(marsPhoto: List<MarsPhoto>)
 
     @Update
     fun update(marsPhoto: MarsPhoto)

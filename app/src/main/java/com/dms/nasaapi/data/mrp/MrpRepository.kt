@@ -3,7 +3,10 @@ package com.dms.nasaapi.data.mrp
 import android.util.Log
 import androidx.paging.LivePagedListBuilder
 import com.dms.nasaapi.api.NasaApiService
-import com.dms.nasaapi.db.marsRoverPhotos.MrpLocalCache
+import com.dms.nasaapi.db.marsRoverPhotos.MrpDAO
+
+import com.dms.nasaapi.model.image_library.Listing
+import com.dms.nasaapi.model.mrp.MarsPhoto
 import com.dms.nasaapi.model.mrp.MrpSearchResult
 
 /**
@@ -11,31 +14,33 @@ import com.dms.nasaapi.model.mrp.MrpSearchResult
  */
 class MrpRepository(
     private val service: NasaApiService,
-    private val cache:MrpLocalCache
+    private val dao: MrpDAO
 ) {
 
-    /**
-     * Search repositories whose names match the query.
-     */
-    fun search(query: String): MrpSearchResult {
-        Log.d("MrpRepository", "New query: $query")
-        // Get data source factory from the local cache
-        val dataSourceFactory = cache.getAllMarsPhoto()//query должна быть внутри параметров, но в данном случ. нет
 
-        // Construct the boundary callback
+    fun search(query: String): Listing<MarsPhoto> {
+
+        val dataSourceFactory = dao.getAllMarsPhotos()
+
+
         val boundaryCallback =
-            MrpBoundaryCallback(query, service, cache)
-        val networkErrors = boundaryCallback.networkErrors
+            MrpBoundaryCallback(query, service, dao)
+        val networkState = boundaryCallback.networkErrors
 
-        // Get the paged list
+
         val data = LivePagedListBuilder(dataSourceFactory,
             DATABASE_PAGE_SIZE
         )
             .setBoundaryCallback(boundaryCallback)
             .build()
 
-        // Get the network errors exposed by the boundary callback
-        return MrpSearchResult(data, networkErrors)
+        return Listing(
+            data,networkState,{
+                boundaryCallback.retryAllFailed()
+            },{},{
+                boundaryCallback.clearCoroutineJob()
+            }
+        )
     }
     companion object {
         private const val DATABASE_PAGE_SIZE = 20

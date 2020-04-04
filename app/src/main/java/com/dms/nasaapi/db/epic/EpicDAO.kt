@@ -8,12 +8,12 @@ import com.dms.nasaapi.model.epic.Epic
 @Dao
 interface EpicDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)//заменить сущствующую запись, или если нет, добавить
-    suspend fun add(epic: List<Epic>)
+    suspend fun add(epic: List<Epic>?)
 
     //редактирование/обновление
     @Update
     fun update(epic: List<Epic>)
 
-    @Query("select * from Epic")
-    fun getEpic(): DataSource.Factory<Int,Epic>
+    @Query("select * from Epic WHERE full_date ==:date")
+    fun getEpic(date:String): DataSource.Factory<Int,Epic>
 }

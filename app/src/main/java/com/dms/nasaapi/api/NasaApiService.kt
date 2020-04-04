@@ -32,33 +32,33 @@ private const val TAG = "NasaApiService"
  * @param onSuccess function that defines how to handle the list of repos received
  * @param onError function that defines how to handle request failure
  */
-fun searchMarsPhotos(
-    service: NasaApiService,
-    query: String,
-    page: Int,
-    itemsPerPage: Int,
-    onSuccess: (photos: List<MarsPhoto>) -> Unit,
-    onError: (error: String) -> Unit
-) {
-    Log.d(TAG, "query: $query, page: $page, itemsPerPage: $itemsPerPage")
-
-    service.getMarsPhoto(page, itemsPerPage).enqueue(object : Callback<MrpSearchResponse>{
-        override fun onFailure(call: Call<MrpSearchResponse>, t: Throwable) {
-            Log.d(TAG, "fail to get data")
-            onError(t.message ?: "unknown error")
-        }
-
-        override fun onResponse(call: Call<MrpSearchResponse>, response: Response<MrpSearchResponse>) {
-            Log.d(TAG, "got a response $response")
-            if (response.isSuccessful) {
-                val repos = response.body()?.photos ?: emptyList()
-                onSuccess(repos)
-            } else {
-                onError(response.errorBody()?.string() ?: "Unknown error")
-            }
-        }
-    })
-}
+//fun searchMarsPhotos(
+//    service: NasaApiService,
+//    query: String,
+//    page: Int,
+//    itemsPerPage: Int,
+//    onSuccess: (photos: List<MarsPhoto>) -> Unit,
+//    onError: (error: String) -> Unit
+//) {
+//    Log.d(TAG, "query: $query, page: $page, itemsPerPage: $itemsPerPage")
+//
+//    service.getMarsPhoto(page, itemsPerPage).enqueue(object : Callback<MrpSearchResponse>{
+//        override fun onFailure(call: Call<MrpSearchResponse>, t: Throwable) {
+//            Log.d(TAG, "fail to get data")
+//            onError(t.message ?: "unknown error")
+//        }
+//
+//        override fun onResponse(call: Call<MrpSearchResponse>, response: Response<MrpSearchResponse>) {
+//            Log.d(TAG, "got a response $response")
+//            if (response.isSuccessful) {
+//                val repos = response.body()?.photos ?: emptyList()
+//                onSuccess(repos)
+//            } else {
+//                onError(response.errorBody()?.string() ?: "Unknown error")
+//            }
+//        }
+//    })
+//}
 
 
 interface NasaApiService {
@@ -67,10 +67,10 @@ interface NasaApiService {
     fun getPictureOfTheDay(): Observable<PictureOfTheDay>
 
     @GET("photos?sol=1000&api_key=DEMO_KEY")
-    fun getMarsPhoto(
+    suspend fun getMarsPhoto(
         @Query("page") page: Int,
         @Query("per_page") itemsPerPage: Int
-    ): Call<MrpSearchResponse>
+    ): MrpSearchResponse
 
 
     companion object {

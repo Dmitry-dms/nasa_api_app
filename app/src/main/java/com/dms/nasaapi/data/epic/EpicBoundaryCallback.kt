@@ -5,17 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.dms.nasaapi.api.EpicApiService
-import com.dms.nasaapi.api.NasaApiService
-import com.dms.nasaapi.api.getEpicByDate
 import com.dms.nasaapi.db.epic.EpicDAO
-import com.dms.nasaapi.db.marsRoverPhotos.MrpLocalCache
 import com.dms.nasaapi.model.epic.Epic
 import com.dms.nasaapi.model.image_library.NetworkState
-import com.dms.nasaapi.model.mrp.MarsPhoto
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,32 +21,52 @@ class EpicBoundaryCallback(
     private val coroutineScope = CoroutineScope(Dispatchers.IO + completableJob) //coroutine scope
 
     private val _networkErrors = MutableLiveData<NetworkState>()
+
+    private var retry: (() -> Any)? = null
+    fun retryAllFailed() {
+        val prevRetry = retry
+        retry = null
+        prevRetry?.invoke()
+    }
     val networkErrors: LiveData<NetworkState>
         get() = _networkErrors
     private var isRequestInProgress = false
 
-    private fun requestAndSaveData(date: String){
+    private fun requestAndSaveData(date: String) {
         if (isRequestInProgress) return
+        isRequestInProgress = true
         coroutineScope.launch {
-            isRequestInProgress = true
 
-            getEpicByDate(service, date,
-                { items ->
-                    items.forEach {
-                        val reg = Regex("(-)|(:)|( )")
-                        val text = it.date.split(reg)
-                        it.year = text[0]
-                        it.month = text[1]
-                        it.day = text[2]
+            try {
+                val response= service.getEpicByDate(date)
+                val reg = Regex("(-)|(:)|( )")
+                if (response[0].identifier!=null){
+                    Log.d("EPIC","start")
+                    response.forEach{
+                        Log.d("EPIC","${Thread().name}")
+                        val (year,month,day) = it.date.split(reg)
+                        it.date=it.date.split(" ")[0]
+                        it.year = year
+                        it.month = month
+                        it.day = day
                     }
-                    dao.add(items)
+                    dao.add(response)
+                    _networkErrors.postValue(NetworkState.LOADED)
                     isRequestInProgress = false
-                }, {
-                    _networkErrors.postValue(it)
+                } else {
+                    _networkErrors.postValue(NetworkState.EMPTY)
                     isRequestInProgress = false
                 }
-            )
+            } catch (e: Exception) {
+                _networkErrors.postValue(NetworkState.error("smth went wrong!"))
+                _networkErrors.postValue(NetworkState.error(e.message))
+                e.printStackTrace()
+                isRequestInProgress = false
+            } finally {
+
+            }
         }
+
     }
 
     override fun onZeroItemsLoaded() {
@@ -63,8 +76,11 @@ class EpicBoundaryCallback(
     override fun onItemAtEndLoaded(itemAtEnd: Epic) {
         //requestAndSaveData("2020-03-01")
         val date = Date()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val text = dateFormat.format(date)
-        Log.d("EPIC","$text")
+        val (year,month,day) = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date).split("-")
+        Log.d("EPIC", "$year")
+    }
+
+    fun clearCoroutineJob() {
+        coroutineScope.cancel()
     }
 }

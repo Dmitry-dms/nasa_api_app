@@ -22,7 +22,7 @@ abstract class EpicDatabase : RoomDatabase() {
             }
 
 
-        fun buildDatabase(context: Context) =
+        private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
                 EpicDatabase::class.java, "EpicDB.db"

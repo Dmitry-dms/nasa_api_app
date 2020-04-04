@@ -16,16 +16,14 @@ import retrofit2.Response
 
 class ImLDataSource(val query: String, val api: ImageApiLibraryService) :
     PageKeyedDataSource<Int, Item>() {
-    companion object {
-        var lastRequestedPage = 1
-    }
+
 
     private var isRequestInProgress = false
     private val completableJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.IO + completableJob) //coroutine scope
     private var retry: (() -> Any)? = null
     val networkState = MutableLiveData<NetworkState>()
-    val initialLoad = MutableLiveData<NetworkState>() //we need to observe these
+
     val isEmpty = MutableLiveData<NetworkState>()
 
     fun retryAllFailed() {
@@ -38,13 +36,13 @@ class ImLDataSource(val query: String, val api: ImageApiLibraryService) :
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Item>
     ) {
-        coroutineScope.launch(Dispatchers.IO) {
+        coroutineScope.launch{
             try {
-                initialLoad.postValue(NetworkState.LOADING)
+                networkState.postValue(NetworkState.LOADING)
                 val primarySearchResponse = callLatestSearch(query, 1)
                 primarySearchResponse.enqueue(object : Callback<ImageLibrarySearchResponse> {
                     override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
-                        initialLoad.postValue(NetworkState.error("Network error"))
+                        networkState.postValue(NetworkState.error("Network error"))
                     }
 
                     override fun onResponse(
@@ -53,7 +51,7 @@ class ImLDataSource(val query: String, val api: ImageApiLibraryService) :
                     ) {
                         if (response.isSuccessful) {
                             retry = null
-                            initialLoad.postValue(NetworkState.LOADED)
+                            networkState.postValue(NetworkState.LOADED)
                             if (response.body()!!.collection.items.isEmpty()){
                                 isEmpty.postValue(NetworkState.EMPTY)
                                 callback.onResult(response.body()!!.collection.items, null,2)
@@ -65,7 +63,7 @@ class ImLDataSource(val query: String, val api: ImageApiLibraryService) :
                             retry = {
                                 loadInitial(params, callback)
                             }
-                            initialLoad.postValue(NetworkState.error("Network error"))
+                            networkState.postValue(NetworkState.error("Network error"))
                         }
                     }
                 })
@@ -75,7 +73,7 @@ class ImLDataSource(val query: String, val api: ImageApiLibraryService) :
                 retry = {
                     loadInitial(params, callback)
                 }
-                initialLoad.postValue(NetworkState.error("Network error"))
+                networkState.postValue(NetworkState.error("Network error"))
             }
 
         }

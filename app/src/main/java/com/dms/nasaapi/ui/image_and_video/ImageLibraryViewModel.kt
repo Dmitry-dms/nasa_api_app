@@ -22,10 +22,7 @@ class ImageLibraryViewModel(private val repository: ImLRepository) : ViewModel()
     val networkState: LiveData<NetworkState> =
         Transformations.switchMap(queryResult) { it -> it.networkState }
 
-    val refreshState: LiveData<NetworkState> =
-        Transformations.switchMap(queryResult) { it.refreshState }
 
-    val emptyState: LiveData<NetworkState> = Transformations.switchMap(queryResult) { it.isEmpty }
 
 
     fun searchImages(query: String) {

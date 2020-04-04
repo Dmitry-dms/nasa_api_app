@@ -1,4 +1,4 @@
-package com.dms.nasaapi.ui
+package com.dms.nasaapi.ui.apod
 
 import android.os.Bundle
 import android.util.Log
@@ -7,15 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.dms.nasaapi.Injection
 import com.dms.nasaapi.R
 import com.dms.nasaapi.model.PictureOfTheDay
 import kotlinx.android.synthetic.main.fragment_apod.*
 
 
 class ApodFragment : Fragment() {
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: ApodViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,14 +28,13 @@ class ApodFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel= ViewModelProvider.AndroidViewModelFactory(activity!!.application).create(
-            MainActivityViewModel::class.java)
-        viewModel.getApod()?.observe(viewLifecycleOwner, Observer {
+        viewModel = ViewModelProviders.of(this, Injection.provideApodViewModelFactory(context!!))
+            .get(ApodViewModel::class.java)
+        viewModel.result?.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 displayData(it)
-                Log.d("TAG","success vm")
-            }
-            else  {
+                Log.d("TAG", "success vm")
+            } else {
                 Log.d("TAG", "error vm")
 
             }

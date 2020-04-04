@@ -44,7 +44,7 @@ private const val TAG = "searchImageLibrary"
 
 interface ImageApiLibraryService {
     @GET("search?")
-    suspend fun getImageBySearch(
+    fun getImageBySearch(
         @Query("q") search: String,
         @Query("page") page: Int
     ): Call<ImageLibrarySearchResponse>

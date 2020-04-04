@@ -23,8 +23,7 @@ class ImLRepository(private val service: ImageApiLibraryService) {
             .build()
         return Listing(
             pagedList = pagedListBuilder,
-            networkState = Transformations.switchMap(factory.mutableDataSource) { it.initialLoad },
-            refreshState = Transformations.switchMap(factory.mutableDataSource) { it.networkState },
+            networkState = Transformations.switchMap(factory.mutableDataSource) { it.networkState },
             retry = {
                 factory.mutableDataSource.value?.retryAllFailed()
             },
@@ -33,8 +32,7 @@ class ImLRepository(private val service: ImageApiLibraryService) {
             },
             clearCoroutineJobs = {
                 factory.mutableDataSource.value?.clearCoroutineJobs()
-            },
-            isEmpty = Transformations.switchMap(factory.mutableDataSource) { it.isEmpty }
+            }
         )
     }
 }

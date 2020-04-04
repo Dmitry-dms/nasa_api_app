@@ -18,7 +18,7 @@ class ImLDataSourceFactory(private val query: String,private val api: ImageApiLi
 
         mImLDataSource = ImLDataSource(query,api)
         mutableDataSource.postValue(mImLDataSource)
-        Log.d("TAG2", "state = ${mImLDataSource.networkState.value?.msg}")
+
         return mImLDataSource
     }
 }

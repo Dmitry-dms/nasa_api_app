@@ -11,7 +11,7 @@ data class Epic(
     val caption: String,
     @SerializedName("date")
     @ColumnInfo(name = "full_date")
-    val date: String,
+    var date: String,
     @SerializedName("identifier")
     @PrimaryKey
     val identifier: String,

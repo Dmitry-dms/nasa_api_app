@@ -29,7 +29,6 @@ class ImageLibraryFragment : Fragment() {
 
     private lateinit var viewModel: ImageLibraryViewModel
     private var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
-    //lateinit var layout: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +38,6 @@ class ImageLibraryFragment : Fragment() {
         val filterIcon = coordinatorLayout.findViewById<ImageView>(R.id.icon)
         val contentLayout = coordinatorLayout.findViewById<LinearLayout>(R.id.layout_main)
 
-      //  layout=coordinatorLayout.findViewById(R.id.linearLayout_iml)
         sheetBehavior = BottomSheetBehavior.from(contentLayout)
 
         sheetBehavior?.apply {
@@ -47,7 +45,6 @@ class ImageLibraryFragment : Fragment() {
             isHideable = false //prevents the boottom sheet from completely hiding off the screen
             state=BottomSheetBehavior.STATE_EXPANDED //initially state to fully expanded
         }
-
 
         filterIcon.setOnClickListener {
             toggleFilters()
@@ -89,22 +86,8 @@ class ImageLibraryFragment : Fragment() {
         })
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
             Log.d("TAG2", " network state ${it.status}")
-            showEmptyList(it.status == Status.FAILED)
+            showEmptyList(it.status == Status.FAILED || it.status==Status.EMPTY)
         })
-        viewModel.refreshState.observe(viewLifecycleOwner, Observer {
-            Log.d("TAG2", " refresh state ${it.status}")
-            showEmptyList(it.status == Status.FAILED)
-
-        })
-        viewModel.emptyState.observe(viewLifecycleOwner, Observer {
-//            if (it.status == Status.EMPTY) {
-//                Toast.makeText(context, "\uD83D\uDE28 Wooops, no results", Toast.LENGTH_LONG)
-//                    .show()
-//            }
-            showEmptyList(it.status == Status.EMPTY)
-        })
-
-
     }
 
     private fun updateListFromInput() {
@@ -113,36 +96,19 @@ class ImageLibraryFragment : Fragment() {
                 image_lib_rv.scrollToPosition(0)
                 viewModel.searchImages(it.toString())
                 adapter.submitList(null)
-
             }
         }
     }
 
     private fun initSearch(query: String) {
         search_repo.setText(query)
-
-//        search_repo.setOnEditorActionListener { it, actionId, _ ->
-//            if (actionId == EditorInfo.IME_ACTION_GO) {
-//                Log.d("keyboard", "editor")
-//                val imm =
-//                    it.getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                imm.hideSoftInputFromWindow(it.windowToken, 0)
-//
-//                updateListFromInput()
-//                true
-//            } else {
-//                false
-//            }
-//        }
         search_repo.setOnKeyListener { it, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
                 val imm =
                     it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
-
                 updateListFromInput()
-
                 true
             } else {
                 false
