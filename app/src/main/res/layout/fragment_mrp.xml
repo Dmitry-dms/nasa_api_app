@@ -9,73 +9,57 @@
 
     <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:orientation="vertical">
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:scrollbars="none"
-            android:layout_height="match_parent">
-        <LinearLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="600dp"
-                android:src="@raw/curiosity" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/curiosity_about"
-                android:layout_marginBottom="50dp"
-                />
-        </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-    </LinearLayout>
+    <include layout="@layout/mrp_back_layer" />
 
     <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
     <LinearLayout
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/rounded_corner"
+        android:elevation="1dp"
         android:orientation="vertical"
-        app:behavior_peekHeight="56dp"
         app:layout_behavior=".ext.GestureLockedBottomSheetBehavior">
 
         <!--This is the backdrop's header with a title and icon-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:elevation="4dp"
-            android:orientation="vertical"
-            android:padding="4dp"
-            android:focusable="true">
+            android:orientation="vertical">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/filterIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_gravity="end"
-                android:src="@drawable/ic_filter_black_24dp" />
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:cropToPadding="false"
+                android:scaleType="center"
+                app:lottie_colorFilter="@color/colorPrimary"
+                app:lottie_rawRes="@raw/expand_button" />
 
         </LinearLayout>
 
         <!--And finally this is the body of the backdrop's content. You can add here whatever you need inside a view group (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
 
         <!--The content's body goes here-->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading_mrp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_mrp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/emptyList"

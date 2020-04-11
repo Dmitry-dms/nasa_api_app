@@ -4,21 +4,21 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@android:drawable/ic_btn_speak_now"
-            android:title="home_frament"/>
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="@string/apod"/>
         <item
             android:id="@+id/nav_library"
-            android:icon="@android:drawable/ic_lock_idle_alarm"
-            android:title="Library"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="@string/nasa_search"
             />
         <item
             android:id="@+id/nav_gallery"
             android:icon="@android:drawable/ic_menu_gallery"
-            android:title="gallery"/>
+            android:title="@string/mars_rover_photos"/>
         <item
             android:id="@+id/nav_epic"
-            android:icon="@android:drawable/ic_dialog_dialer"
-            android:title="epic"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="@string/epic"
             />
 
     </group>

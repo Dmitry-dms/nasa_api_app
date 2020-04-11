@@ -1,13 +1,12 @@
 package com.dms.nasaapi.ui.image_and_video
 
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagedList
 import com.dms.nasaapi.data.image_library.ImLRepository
 
 import com.dms.nasaapi.model.image_library.Item
-import com.dms.nasaapi.model.image_library.Listing
-import com.dms.nasaapi.model.image_library.NetworkState
+import com.dms.nasaapi.model.Listing
+import com.dms.nasaapi.model.NetworkState
 
 class ImageLibraryViewModel(private val repository: ImLRepository) : ViewModel() {
 

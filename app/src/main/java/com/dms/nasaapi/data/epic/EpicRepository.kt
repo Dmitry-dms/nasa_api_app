@@ -2,33 +2,27 @@ package com.dms.nasaapi.data.epic
 
 import androidx.paging.LivePagedListBuilder
 import com.dms.nasaapi.api.EpicApiService
+import com.dms.nasaapi.data.BaseRepository
 import com.dms.nasaapi.db.epic.EpicDAO
 import com.dms.nasaapi.model.epic.Epic
-import com.dms.nasaapi.model.epic.EpicSearchResponse
-import com.dms.nasaapi.model.image_library.Listing
+import com.dms.nasaapi.model.Listing
+import com.dms.nasaapi.model.NetworkState
 
-class EpicRepository(private val service: EpicApiService,private val epicDAO: EpicDAO) {
+class EpicRepository(private val service: EpicApiService,private val epicDAO: EpicDAO) : BaseRepository() {
 
-    fun search(date: String): Listing<Epic>{
+    override fun search(date: String): Listing<Epic> {
         val factory = epicDAO.getEpic(date)
-
         val callback = EpicBoundaryCallback(date,service,epicDAO)
 
-        val state = callback.networkErrors
+        val state = callback.networkState
         val data = LivePagedListBuilder(factory,13)
             .setBoundaryCallback(callback)
             .build()
         return Listing(
-            data,state,
-            {
-                callback.retryAllFailed()
-            },
-            {
-
-            },
-            {
-                callback.clearCoroutineJob()
-            }
+            pagedList = data,
+            networkState = state,
+            retry = { callback.retryAllFailed() },
+            clearCoroutineJobs = { callback.clearCoroutineJob() }
         )
 
     }

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.dms.nasaapi.db.marsRoverPhotos.MrpDatabase
 import com.dms.nasaapi.model.epic.Epic
 
 @Database(entities = [Epic::class], version = 1)

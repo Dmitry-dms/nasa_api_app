@@ -16,7 +16,7 @@ class MarsPhotoAdapter :
     override fun onBindViewHolder(holder: MarsViewHolder, position: Int) {
         val marsPhoto = getItem(position)
         if (marsPhoto !=null){
-            (holder as MarsViewHolder).bind(marsPhoto)
+            holder.bind(marsPhoto)
         }
     }
 

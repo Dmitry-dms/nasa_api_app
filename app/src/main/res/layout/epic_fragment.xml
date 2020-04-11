@@ -2,22 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/oval"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/colorPrimary"
     android:layout_height="match_parent"
     tools:context=".ui.epic.EpicFragment">
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:hint="@string/input_date_hint"
+        android:textColorHint="@android:color/white"
+        android:layout_height="wrap_content">
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editDate"
+        android:textColor="@android:color/white"
         android:text="2020-03-03"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:ems="10"
         android:inputType="date" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:id="@+id/loading_epic"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="true"
+        android:visibility="visible"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading" />
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/epic_rv"
+        android:visibility="gone"
+        android:layout_marginTop="4dp"
         />
     <TextView
         android:layout_width="wrap_content"
@@ -25,6 +42,7 @@
         android:id="@+id/tv_error_epic"
         android:layout_gravity="center"
         android:gravity="center"
+        android:textColor="@android:color/white"
         android:text="@string/no_results"
         android:visibility="gone"
         />

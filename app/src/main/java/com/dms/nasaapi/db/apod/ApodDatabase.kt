@@ -4,10 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.dms.nasaapi.db.epic.EpicDatabase
-import com.dms.nasaapi.model.PictureOfTheDay
+import com.dms.nasaapi.model.apod.PictureOfTheDay
 
-@Database(entities = [PictureOfTheDay::class],version = 2)
+@Database(entities = [PictureOfTheDay::class],version = 1)
 abstract class ApodDatabase: RoomDatabase() {
 
     abstract fun getApodDao(): ApodDAO

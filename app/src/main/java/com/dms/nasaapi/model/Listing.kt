@@ -1,25 +1,23 @@
-package com.dms.nasaapi.model.image_library
+package com.dms.nasaapi.model
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 
 data class Listing<T>(
     val pagedList: LiveData<PagedList<T>>,
-    val networkState: LiveData<NetworkState>, //initial state
-    val refresh: () -> Unit, // signal the data source to stop loading, and notify its callback
-    val retry: () -> Unit,  // remake the call
-    val clearCoroutineJobs: () -> Unit // the way to stop jobs from running since no lifecycle provided
+    val networkState: LiveData<NetworkState>,
+    val retry: () -> Unit,
+    val clearCoroutineJobs: () -> Unit
 )
 
 enum class Status {
     RUNNING,
     SUCCESS,
     FAILED,
-    EMPTY,
-    FULL
+    EMPTY
 }
 
-data class NetworkState private constructor(
+data class NetworkState constructor(
     val status: Status,
     val msg: String? = null
 ) {
@@ -33,7 +31,7 @@ data class NetworkState private constructor(
             Status.FAILED,
             msg
         )
-        val EMPTY = NetworkState(Status.EMPTY)
-        val FULL = NetworkState(Status.FULL)
+        val EMPTY =
+            NetworkState(Status.EMPTY)
     }
 }

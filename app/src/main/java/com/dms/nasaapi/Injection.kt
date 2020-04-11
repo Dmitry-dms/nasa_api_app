@@ -1,12 +1,11 @@
 package com.dms.nasaapi
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.DataSource
+import com.dms.nasaapi.api.ApodApiService
 import com.dms.nasaapi.api.EpicApiService
 import com.dms.nasaapi.api.ImageApiLibraryService
-import com.dms.nasaapi.api.NasaApiService
+import com.dms.nasaapi.api.MrpApiService
 import com.dms.nasaapi.data.apod.ApodRepository
 import com.dms.nasaapi.data.epic.EpicRepository
 import com.dms.nasaapi.data.image_library.ImLRepository
@@ -16,13 +15,10 @@ import com.dms.nasaapi.db.apod.ApodDatabase
 import com.dms.nasaapi.db.epic.EpicDAO
 import com.dms.nasaapi.db.epic.EpicDatabase
 import com.dms.nasaapi.db.marsRoverPhotos.MrpDatabase
-
-import com.dms.nasaapi.model.epic.Epic
 import com.dms.nasaapi.ui.apod.ApodViewModelFactory
 import com.dms.nasaapi.ui.epic.EpicViewModelFactory
 import com.dms.nasaapi.ui.image_and_video.ImLViewModelFactory
 import com.dms.nasaapi.ui.mrp.MrpViewModelFactory
-import java.util.concurrent.Executors
 
 /**
  * Class that handles object creation.
@@ -31,51 +27,32 @@ import java.util.concurrent.Executors
  */
 object Injection {
 
-    /**
-     * Creates an instance of [MrpLocalCache] based on the database DAO.
-     */
-//    private fun provideCache(context: Context): MrpLocalCache {
-//        val database = MrpDatabase.getInstance(context)
-//        return MrpLocalCache(database.getMrpDao(), Executors.newSingleThreadExecutor())
-//    }
 
-    /**
-     * Creates an instance of [MrpRepository] based on the [NasaApiService] and a
-     * [MrpLocalCache]
-     */
     private fun provideMrpRepository(context: Context): MrpRepository {
-        return MrpRepository(
-            NasaApiService.create(),
-            MrpDatabase.getInstance(context).getMrpDao()
-        )
+        return MrpRepository(MrpApiService.create(), MrpDatabase.getInstance(context).getMrpDao())
     }
 
-    /**
-     * Provides the [ViewModelProvider.Factory] that is then used to get a reference to
-     * [ViewModel] objects.
-     */
     fun provideViewModelFactory(context: Context): ViewModelProvider.Factory {
-        return MrpViewModelFactory(
-            provideMrpRepository(
-                context
-            )
-        )
+        return MrpViewModelFactory(provideMrpRepository(context))
     }
-    private fun provideImLRepository(): ImLRepository{
+
+    private fun provideImLRepository(): ImLRepository {
         return ImLRepository(ImageApiLibraryService.create())
     }
-    fun provideImLViewModelFactory():ViewModelProvider.Factory{
+
+    fun provideImLViewModelFactory(): ViewModelProvider.Factory {
         return ImLViewModelFactory(provideImLRepository())
     }
 
-    private fun provideEpicDao(context: Context): EpicDAO{
+    private fun provideEpicDao(context: Context): EpicDAO {
         return EpicDatabase.getInstance(context).getEpicDao()
     }
 
-    private fun provideEpicRepository(context: Context):EpicRepository{
+    private fun provideEpicRepository(context: Context): EpicRepository {
         return EpicRepository(EpicApiService.create(), provideEpicDao(context))
     }
-    fun provideEpicViewModelFactory(context: Context):ViewModelProvider.Factory{
+
+    fun provideEpicViewModelFactory(context: Context): ViewModelProvider.Factory {
         return EpicViewModelFactory(provideEpicRepository(context))
     }
 
@@ -84,9 +61,10 @@ object Injection {
     }
 
     private fun provideApodRepository(context: Context): ApodRepository {
-        return ApodRepository(NasaApiService.create(), provideApodDao(context))
+        return ApodRepository(ApodApiService.create(), provideApodDao(context))
     }
-    fun provideApodViewModelFactory(context: Context):ViewModelProvider.Factory{
+
+    fun provideApodViewModelFactory(context: Context): ViewModelProvider.Factory {
         return ApodViewModelFactory(provideApodRepository(context))
     }
 

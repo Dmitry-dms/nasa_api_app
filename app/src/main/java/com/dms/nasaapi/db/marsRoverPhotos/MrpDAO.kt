@@ -1,7 +1,10 @@
 package com.dms.nasaapi.db.marsRoverPhotos
 
 import androidx.paging.DataSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.dms.nasaapi.model.mrp.MarsPhoto
 
 
@@ -10,16 +13,7 @@ interface MrpDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(marsPhoto: List<MarsPhoto>)
 
-    @Update
-    fun update(marsPhoto: MarsPhoto)
+    @Query("select * from MarsPhoto")
+    fun getAllMarsPhotos(): DataSource.Factory<Int, MarsPhoto>
 
-//    @Query("select * from MarsPhoto")
-//    fun getAllMarsPhotos():LiveData<List<MarsPhoto>>
-
-    @Query("select * from MarsPhoto") //where id >= :id limit :size
-    fun getAllMarsPhotos():DataSource.Factory<Int, MarsPhoto>
-
-
-//    @Query("SELECT MAX(indexInResponse)+1 FROM MarsPhoto WHERE img_src =:image")
-//    fun getNextIndexInImage(image: String):Int
 }

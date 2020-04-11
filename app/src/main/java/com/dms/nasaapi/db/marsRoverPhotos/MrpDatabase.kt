@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.dms.nasaapi.model.mrp.MarsPhoto
 
-@Database(entities = [MarsPhoto::class], version = 1, exportSchema = false)
+@Database(entities = [MarsPhoto::class], version = 1)
 abstract class MrpDatabase : RoomDatabase() {
 
     abstract fun getMrpDao(): MrpDAO
@@ -17,7 +17,7 @@ abstract class MrpDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): MrpDatabase =
             INSTANCE ?: synchronized(this) {
-                INSTANCE?: buildDatabase(context).also { INSTANCE = it }
+                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
 
 

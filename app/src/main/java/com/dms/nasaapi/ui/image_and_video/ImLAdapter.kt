@@ -1,10 +1,8 @@
 package com.dms.nasaapi.ui.image_and_video
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.dms.nasaapi.R
 import com.dms.nasaapi.model.image_library.Item
 
 
@@ -17,7 +15,7 @@ class ImLAdapter: PagedListAdapter<Item,ImLViewHolder>(REPO_COMPARATOR) {
     override fun onBindViewHolder(holder: ImLViewHolder, position: Int) {
         val items = getItem(position)
         items?.let {
-            (holder as ImLViewHolder).bind(it)
+            holder.bind(it)
         }
 
     }

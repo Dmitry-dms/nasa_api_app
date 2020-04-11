@@ -3,51 +3,19 @@ package com.dms.nasaapi.api
 import com.dms.nasaapi.model.image_library.ImageLibrarySearchResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val TAG = "searchImageLibrary"
-//fun searchImageLibrary(
-//    service: ImageApiLibraryService,
-//    query: String,
-//    page: Int,
-//    onSuccess: (items: List<Item>) -> Unit,
-//    onError: (error: String) -> Unit
-//) {
-//    Log.d(TAG, "query: $query, page: $page")
-//    service.getImageBySearch(query,page).enqueue(object : Callback<ImageLibrarySearchResponse>{
-//        override fun onFailure(call: Call<ImageLibrarySearchResponse>, t: Throwable) {
-//            Log.d(TAG, "fail to get data")
-//            onError(t.message ?: "unknown error")
-//        }
-//
-//        override fun onResponse(
-//            call: Call<ImageLibrarySearchResponse>,
-//            response: Response<ImageLibrarySearchResponse>
-//        ) {
-//            Log.d(TAG, "got a response $response")
-//            if(response.isSuccessful){
-//                val items = response.body()?.collection?.items ?: emptyList()
-//                onSuccess(items)
-//            } else {
-//                onError(response.errorBody()?.string() ?: "Unknown error")
-//            }
-//
-//        }
-//
-//    })
-//
-//}
 
 interface ImageApiLibraryService {
+
     @GET("search?")
-    fun getImageBySearch(
+    suspend fun getImageBySearch(
         @Query("q") search: String,
         @Query("page") page: Int
-    ): Call<ImageLibrarySearchResponse>
+    ): ImageLibrarySearchResponse
 
     companion object {
         private const val BASE_URL = "https://images-api.nasa.gov/"

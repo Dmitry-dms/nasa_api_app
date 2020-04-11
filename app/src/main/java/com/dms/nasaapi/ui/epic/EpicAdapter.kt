@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.dms.nasaapi.model.epic.Epic
-import com.dms.nasaapi.model.mrp.MarsPhoto
 
 class EpicAdapter : PagedListAdapter<Epic, EpicViewHolder>(REPO_COMPARATOR) {
 
